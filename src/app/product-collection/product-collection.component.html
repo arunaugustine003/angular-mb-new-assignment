@@ -1,0 +1,68 @@
+<div class="product-header">
+  <div class="product-header-left">
+    <h1 *ngIf="selectedProduct">{{ selectedProduct.title }}</h1>
+    <h2>Explore our 10mm Glass Beads collection</h2>
+    <h2>
+      Use these beads for Jewellery making, embroidery, accessories,
+      dreamcatchers, home decor,<br> macrame and other art and craft projects.
+    </h2>
+  </div>
+  <div class="product-header-right">
+    <div class="filter-by">
+      <label for="color">Filter by</label>
+      <select
+        [(ngModel)]="selectedColor"
+        (change)="products = filterByColor(selectedColor)"
+        name="color"
+      >
+        <option value="">All</option>
+        <option value="Red">Red</option>
+        <option value="Green">Green</option>
+        <option value="Blue">Blue</option>
+        <option value="Yellow">Yellow</option>
+        <option value="Pink">Pink</option>
+        <option value="Orange">Orange</option>
+        <option value="Purple">Purple</option>
+        <option value="Brown">Brown</option>
+      </select>
+    </div>
+    <div class="sort-by">
+      <label for="sort">Sort by</label>
+      <select
+        [(ngModel)]="sortBy"
+        (change)="sortProducts(sortBy)" 
+        name="sort"
+      >
+      <option value="id">Product Tag / ID</option>
+        <option value="title">Title</option>
+        <option value="price">Price</option>
+        <option value="inventory_quantity">Quantity</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<div class="product-collection">
+  <div
+    class="product"
+    *ngFor="let product of products | slice : (page - 1) * 20 : page * 20"
+    (click)="selectProduct(product)"
+    [ngStyle]="{ cursor: 'pointer' }"
+  >
+    <img [src]="product.image.src" alt="{{ product.image.alt }}" />
+    <h2>{{ product.title }}</h2>
+    <div class="prices">
+      <del *ngIf="product.variants[0].compare_at_price">{{
+        product.variants[0].compare_at_price
+      }}</del>
+      <span>{{ product.variants[0].price }}</span>
+      <span> ({{ product.variants[0].inventory_quantity }}) nos left</span>
+    </div>
+  </div>
+</div>
+
+<div class="pagination">
+  <button (click)="previousPage()">Previous</button>
+  <span>Page {{ page }}</span>
+  <button (click)="nextPage()">Next</button>
+</div>
