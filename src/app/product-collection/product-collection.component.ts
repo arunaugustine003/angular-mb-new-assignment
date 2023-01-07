@@ -21,19 +21,21 @@ export class ProductCollectionComponent implements OnInit {
     this.selectedProduct = { title: 'Violet - 10mm Glass Beads' };
     this.productService.getProducts().subscribe((products) => {
       this.products = products as any[];
-      this.refreshCollection(this.sortBy);
+      this.refreshCollection();
     });
   }
   filterByColor(color: string) {
     if (color === '') {
       return this.products;
     }
-    return this.products.filter(product => product.title.includes(color));
+    return this.products.filter((product) => product.title.includes(color));
   }
   sortProducts(attribute: string) {
     if (attribute === 'price') {
       this.products.sort((a, b) => {
-        return Number(a.variants[0][attribute]) - Number(b.variants[0][attribute]);
+        return (
+          Number(a.variants[0][attribute]) - Number(b.variants[0][attribute])
+        );
       });
     } else if (attribute === 'weight' || attribute === 'inventory_quantity') {
       this.products.sort((a, b) => {
@@ -51,11 +53,8 @@ export class ProductCollectionComponent implements OnInit {
       });
     }
   }
-  refreshCollection(attribute: string) {
-    //Start of refreshCollection()
-    // Sort products by attribute
-    this.sortProducts(attribute);
-    // Shuffle/Randomize products within each color group
+  refreshCollection() {
+    // start of refreshCollection()
     const colorGroups = [
       'Red',
       'Green',
@@ -66,6 +65,7 @@ export class ProductCollectionComponent implements OnInit {
       'Purple',
       'Brown',
     ];
+    // Loops through each color group and shuffles the products within each color group
     colorGroups.forEach((color) => {
       this.products.forEach((product, i) => {
         if (product.title.includes(color)) {
@@ -76,12 +76,21 @@ export class ProductCollectionComponent implements OnInit {
         }
       });
     });
-    // Shuffle color groups
+    // Randomizes the order of the color groups
     for (let i = colorGroups.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [colorGroups[i], colorGroups[j]] = [colorGroups[j], colorGroups[i]];
     }
-    // Move products with "inventory_quantity": 0 to the end of the array
+    // Loops through each color group again and moves products with that color to the beginning of the array
+    colorGroups.forEach((color) => {
+      this.products.forEach((product, i) => {
+        if (product.title.includes(color)) {
+          this.products.splice(i, 1);
+          this.products.unshift(product);
+        }
+      });
+    });
+    // Sorts the products by moving the products with an "inventory_quantity" of 0 to the end of the array
     this.products = this.products.sort((a, b) => {
       if (
         a.variants[0].inventory_quantity === 0 &&
@@ -97,9 +106,10 @@ export class ProductCollectionComponent implements OnInit {
       }
       return 0;
     });
-    // this.refresh.emit('Collection refreshed');
-    //End of refreshCollection()
+
+    // end of refreshCollection()
   }
+
   selectProduct(product: any) {
     this.selectedProduct = product;
   }
