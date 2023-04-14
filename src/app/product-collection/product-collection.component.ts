@@ -11,24 +11,34 @@ export class ProductCollectionComponent implements OnInit {
   @Output() refresh = new EventEmitter<string>();
 
   page = 1;
-  selectedColor = 'All';
+  selectedColor = "Blue";
   sortBy = 'title';
   selectedProduct!: any;
-
+  filteredProducts!:any[];
   constructor(private productService: ProductService) {}
 
   ngOnInit() {
     this.selectedProduct = { title: 'Violet - 10mm Glass Beads' };
     this.productService.getProducts().subscribe((products) => {
       this.products = products as any[];
+      this.filterByColor(this.selectedColor);
       this.refreshCollection();
     });
+    // this.filteredProducts=this.products;
   }
-  filterByColor(color: string) {
-    if (color === '') {
-      return this.products;
+  // filterByColor(color: string) {
+  //   if (color === '') {
+  //     return this.products;
+  //   }
+  //   return this.products.filter((product) => product.title.includes(color));
+  // }
+  filterByColor(color: string){
+    if (color === 'All') {
+      this.filteredProducts = this.products;
+    } else {
+      this.filteredProducts = this.products.filter((product) => product.title.includes(color));
     }
-    return this.products.filter((product) => product.title.includes(color));
+    return this.filteredProducts;
   }
   sortProducts(attribute: string) {
     if (attribute === 'price') {
@@ -56,14 +66,12 @@ export class ProductCollectionComponent implements OnInit {
   refreshCollection() {
     // start of refreshCollection()
     const colorGroups = [
-      'Red',
       'Green',
       'Blue',
       'Yellow',
       'Pink',
       'Orange',
       'Purple',
-      'Brown',
     ];
     // Loops through each color group and shuffles the products within each color group
     colorGroups.forEach((color) => {

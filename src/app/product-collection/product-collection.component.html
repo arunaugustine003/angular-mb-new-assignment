@@ -12,18 +12,16 @@
       <label for="color">Filter by</label>
       <select
         [(ngModel)]="selectedColor"
-        (change)="products = filterByColor(selectedColor)"
+        (change)="filteredProducts = filterByColor(selectedColor)"
         name="color"
       >
-        <option value="">All</option>
-        <option value="Red">Red</option>
+        <option selected="selected" value="All">All</option>
         <option value="Green">Green</option>
         <option value="Blue">Blue</option>
         <option value="Yellow">Yellow</option>
         <option value="Pink">Pink</option>
         <option value="Orange">Orange</option>
         <option value="Purple">Purple</option>
-        <option value="Brown">Brown</option>
       </select>
     </div>
     <div class="sort-by">
@@ -45,7 +43,7 @@
 <div class="product-collection">
   <div
     class="product"
-    *ngFor="let product of products | slice : (page - 1) * 20 : page * 20"
+    *ngFor="let product of filteredProducts | slice : (page - 1) * 20 : page * 20"
     (click)="selectProduct(product)"
     [ngStyle]="{ cursor: 'pointer' }"
   >

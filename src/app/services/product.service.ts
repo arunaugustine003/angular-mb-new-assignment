@@ -9,6 +9,6 @@ export class ProductService {
   constructor(private http: HttpClient) { }
 
   getProducts() {
-    return this.http.get('http://localhost:3000/products');
+    return this.http.get('https://angular-mb-db.onrender.com/products');
   }
 }
